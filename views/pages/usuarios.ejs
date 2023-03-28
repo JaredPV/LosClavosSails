@@ -1,0 +1,124 @@
+<style>
+  .display-4 {
+    margin-top: 10px;
+  }
+  .table {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 35cm;
+    margin-top: 10px;
+  }
+  .container-col-5de {
+    width: auto;
+    margin-left: 70%;
+  }
+</style>
+<center><h1 class="display-4"><b>USUARIOS</b></h1></center>
+<div class="container-sm">
+  <div class="row">
+    <div class="col-sm" style="max-width: auto; margin-top: auto">
+      <button class="btn btn-outline-success" onclick="window.location.href='/nuevo-usuario'">
+        <i class="bi bi-plus"></i>Nuevo Usuario
+      </button>
+    </div>
+    <div class="col-sm" style="max-width: 35%; margin-left: 45%">
+      <form action="/usuarios" method="GET">
+        <h5 class="tit">
+          BÚSQUEDA AVANZADA:<br />Ingresa usuario o Id de Usuario
+        </h5>
+        <div class="input-group">
+          <input
+            type="text"
+            class="col rounded"
+            aria-label="Search"
+            id="search"
+            name="search"
+          />
+          <button type="submit" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Id Usuario</th>
+        <th scope="col">Usuario</th>
+        <th scope="col">Contraseña</th>
+        <th scope="col">Estatus</th>
+        <th scope="col">Tipo de Usuario</th>
+        <th class="col-sm-2" scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users_data.forEach(function(usuario){ %> <% if
+      (usuario.usuario.includes(search)||usuario.idUsuario==search){%>
+      <tr>
+        <td><%=usuario.idUsuario%></td>
+        <td><%=usuario.usuario%></td>
+        <td><%=usuario.psw%></td>
+        <%if(usuario.activo){%>
+        <td>Activo</td>
+        <%}%> <%if(!usuario.activo){%>
+        <td>Inactivo</td>
+        <%}%> <%if(usuario.tipoUsuario){%>
+        <td>Administrador</td>
+        <%}%> <%if(!usuario.tipoUsuario){%>
+        <td>Vendedor</td>
+        <%}%>
+        <td>
+          <a href="/usuarios/<%=usuario.idUsuario%>"
+            ><i class="bi bi-pencil-square" style="color: black"></i
+          ></a>
+          <a onclick="eliminarUsuario('<%=usuario.idUsuario%>')">
+            <i class="bi bi-trash3-fill" style="color: black"></i>
+          </a>
+        </td>
+      </tr>
+      <% } %> <% }) %>
+    </tbody>
+  </table>
+</div>
+<script type="text/javascript" charset="utf-8">
+  function eliminarUsuario(id) {
+    Swal.fire({
+      title: "Cuidado, eliminando registro de usuario...",
+      text: "El registro se eliminara definitivamente",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch("/v1/eliminar-usuario/" + id, {
+          method: "POST",
+          body: JSON.stringify(this.formulario),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then(() => {
+            Swal.fire(
+              "USUARIO ELIMINADO",
+              "El registro del usuario se ha eliminado de la base de datos",
+              "success"
+            ).then(() => {
+              window.location.href = "/usuarios";
+            });
+          })
+          .catch(function (error) {
+            Swal.fire(
+              "Error",
+              "Error al eliminar el registro del usuario: " + error,
+              "error"
+            );
+            console.error(error);
+          });
+      }
+    });
+  }
+</script>

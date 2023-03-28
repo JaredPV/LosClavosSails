@@ -1,0 +1,38 @@
+<style type="text/css">
+	.boxLogin{
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+		border: 1px #333 solid;
+		padding-top: 15px;
+		padding-bottom: 15px;
+	}
+
+	.boxLogin .container{
+		width: 330px;
+	}
+</style>
+<div class="boxLogin">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<center>
+					<h4>Iniciar Sesión</h4>
+				</center>
+				<form method="post" action="/v1/login">
+					<div class="form-group">
+						<label for="usuario" class="form-label">Nombre de Usuario</label>
+						<input type="text" class="form-control" id="usuario" name="usuario">
+					</div>
+					<div class="mb-3">
+						<label for="psw" class="form-label">Contraseña</label>
+						<input type="password" class="form-control" id="psw" name="psw">
+					</div>
+                    <center><a href="/recover">Olvidé mi contraseña</a><br>
+					<button type="submit" class="btn btn-success">Iniciar Sesión</button></center>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

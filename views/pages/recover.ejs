@@ -1,0 +1,51 @@
+<style type="text/css">
+	.boxLogin{
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+		border: 1px #333 solid;
+		padding-top: 15px;
+		padding-bottom: 15px;
+	}
+
+	.boxLogin .container{
+		width: 330px;
+	}
+</style>
+<div class="boxLogin">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<center>
+					<h4>Restablcer Contraseña</h4>
+				</center>
+				<form method="post" action="/v1/recover">
+					<div class="form-group">
+						<label for="correo" class="form-label">Correo Electrónico</label>
+						<input type="email" class="form-control" id="correo" name="correo">
+					</div>
+					<div class="mb-3">
+						<label for="psw" class="form-label">Contraseña nueva</label>
+						<input type="password" class="form-control" id="psw" name="psw" onchange='check_pass();'>
+					</div>
+                    <div class="mb-3">
+						<label for="confirmation" class="form-label">Confirmar contraseña nueva</label>
+						<input type="password" class="form-control" id="confirmation" name="confirmation" onchange='check_pass();'>
+					</div>
+                    <center><button id ='submit' disabled = true type="submit" class="btn btn-success">Restablecer</button></center>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function check_pass() {
+    if (document.getElementById('psw').value ==
+            document.getElementById('confirmation').value) {
+        document.getElementById('submit').disabled = false;
+    } else {
+        document.getElementById('submit').disabled = true;
+    }
+}
+</script>

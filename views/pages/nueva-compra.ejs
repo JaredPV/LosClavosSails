@@ -1,0 +1,252 @@
+<style>
+  .center {
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
+
+<div class="container" id="formulario">
+  <h1 class="center">NUEVA COMPRA</h1>
+  <div class="row" style="margin: auto; margin-top: 3rem; width: 80%">
+    <div class="col-sm-3">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        id="SKU"
+        name="SKU"
+        placeholder="SKU"
+        required
+      />
+    </div>
+    <div class="col-sm-2">
+      <input
+        type="number"
+        class="form-control form-control-sm"
+        id="Cantidad"
+        name="Cantidad"
+        pattern="[0-9]"
+        placeholder="Cantidad"
+        required
+      />
+    </div>
+    <div class="col-sm-2">
+      <button
+        type="button"
+        id="Add"
+        name="Add"
+        class="btn btn-outline-primary btn-sm"
+      >
+        Añadir
+      </button>
+    </div>
+  </div>
+  <form action="/v1/realizar-compra" method="post" id="FormularioCompra">
+    <div class="form-check">
+      <table
+        id="Tabla"
+        style="
+          width: 80%;
+          margin: auto;
+          align-items: center;
+          text-align: center;
+          margin-top: 3rem;
+        "
+        class="table table-warning table-striped"
+      >
+        <thead>
+          <tr>
+            <th scope="col">SKU</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Precio Compra</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div
+        class="row mb-3"
+        style="align-items: center; margin: auto; width: 90%"
+      >
+        <div
+          class="row"
+          style="margin-left: 65%; width: 400px; margin-top: 3rem"
+        >
+          <label for="colFormLabel" class="col-sm col-form-label"
+            >Importe Total</label
+          >
+          <div class="col-sm">
+            <input
+              type="number"
+              class="form-control"
+              id="Total"
+              name="Total"
+              step=".01"
+              value="0"
+              readonly
+              required
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="row"
+        style="align-items: center; margin: auto; max-width: 80%"
+      >
+        <div
+          class="col"
+          style="
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+            width: 150px;
+            margin-left: 35%;
+          "
+        >
+          <button
+            type="button"
+            class="btn btn-outline-success"
+            data-bs-toggle="modal"
+            data-bs-target="#modalProveedor"
+          >
+            Realizar Compra
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="modalProveedor"
+      tabindex="-1"
+      aria-labelledby=""
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="facturaLabel">Datos de Proveedor</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="ClaveProveedor" class="col-form-label"
+                  >Clave:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ClaveProveedor"
+                  name="ClaveProveedor"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="NombreProveedor" class="col-form-label"
+                  >Nombre del proveedor</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NombreProveedor"
+                  name="NombreProveedor"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-outline-primary">
+              Finalizar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  function total() {
+    var subtotales = document.getElementsByName("Subtotal");
+    var total = 0;
+    for (let index = 0; index < subtotales.length; index++) {
+      total = total + parseInt(subtotales[index].value);
+    }
+    _("Total").value = total;
+  }
+  function _(element) {
+    return document.getElementById(element);
+  }
+  function eliminarFila(btn) {
+    var row = btn.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+    total();
+  }
+  _("Add").onclick = function () {
+    if (_("Cantidad").value === "" || _("Cantidad").value === "0") return;
+    fetch("/obtener-producto/" + _("SKU").value)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (resData) {
+        console.log(resData);
+        if (Object.keys(resData).length === 0) {
+          alert("SKU incorrecto o inexistente");
+          return;
+        }
+        var subtotal = resData.precioCompra * _("Cantidad").value;
+        _("Tabla").insertRow(-1).innerHTML =
+          "<td><input class='form-control form-control-sm' name='Id' id='Id' value='" +
+          resData.idArticulos +
+          "' readonly />" +
+          "<td><input class='form-control form-control-sm' name='Nombre' id='Nombre' value='" +
+          resData.nombre +
+          "' readonly />" +
+          "</td><td><input class='form-control form-control-sm' name='Descripcion' id='Descripcion' value='" +
+          resData.descripcion +
+          "' readonly />" +
+          "</td><td><input class='form-control form-control-sm' name='Numero' id='Numero' style='max-width: 80px;' value='" +
+          _("Cantidad").value +
+          "' readonly />" +
+          "</td><td><input class='form-control form-control-sm' name='Unitario' id='Unitario' style='max-width: 80px;' value='" +
+          resData.precioCompra +
+          "' readonly />" +
+          "</td><td><input type='number' class='form-control form-control-sm' style='max-width: 100px;' name='Subtotal' id='Subtotal' value=" +
+          subtotal +
+          " readonly />" +
+          '</td><td><a type="button" onclick="eliminarFila(this)"><i class="bi bi-x-square" style="color: red"></i></a></td>';
+        _("SKU").value = "";
+        _("Cantidad").value = "";
+        total();
+      });
+  };
+  _("Cantidad").addEventListener("beforeinput", (e) => {
+    if (!(Number(e.data) >= 0 && Number(e.data) <= 9)) {
+      e.preventDefault();
+    }
+  });
+</script>
+<script type="text/javascript">
+  var data_formulario = {
+    nombre: "",
+    sku: "",
+    disponibilidad: "Selecciona una opción",
+    cantidad: "",
+    deporte: "",
+    precio: "",
+    marca: "",
+    modelo: "",
+  };
+</script>

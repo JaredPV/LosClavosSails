@@ -1,0 +1,132 @@
+<style>
+  .mb-3 {
+    max-width: 10cm;
+    margin-top: 1cm;
+  }
+  .center {
+    text-align: center;
+    margin-top: 30px;
+  }
+</style>
+<div class="container" id="formulario">
+  <h1 class="center">MODIFICAR USUARIO</h1>
+  <div class="form-check">
+    <div class="row" style="align-items: center; margin: auto; width: 90%">
+      <div class="col-sm">
+        <label class="form-label">Nombre</label>
+        <input
+          style="text-transform: capitalize"
+          type="text"
+          class="form-control"
+          v-model="formulario.nombre"
+          name="nombre"
+          aria-describedby="help"
+          required
+        />
+        <small id="help" class="form-text text-muted"
+          >ESTE CAMPO ES OBLIGATORIO</small
+        >
+      </div>
+
+      <div class="col-sm">
+        <label class="form-label">Correo</label>
+        <input
+          style="text-transform: lowercase"
+          type="email"
+          class="form-control"
+          v-model="formulario.correo"
+          name="correo"
+          aria-describedby="help"
+          required
+        />
+        <small id="help" class="form-text text-muted"
+          >ESTE CAMPO ES OBLIGATORIO</small
+        >
+      </div>
+    </div>
+    <div class="row" style="align-items: center; margin: auto; width: 90%">
+      <div class="col-sm">
+        <label class="form-label">Usuario</label>
+        <input
+          style="text-transform: lowercase"
+          type="text"
+          class="form-control"
+          v-model="formulario.usuario"
+          name="usuario"
+          aria-describedby="help"
+          required
+        />
+        <small id="help" class="form-text text-muted"
+          >ESTE CAMPO ES OBLIGATORIO</small
+        >
+      </div>
+
+      <div class="col-sm">
+        <label class="form-label">Contraseña:</label>
+        <input
+          type="password"
+          class="form-control"
+          v-model="formulario.psw"
+          name="psw"
+          aria-describedby="help"
+          required
+        />
+        <small id="help" class="form-text text-muted"
+          >ESTE CAMPO ES OBLIGATORIO</small
+        >
+      </div>
+    </div>
+    <div class="row" style="align-items: center; margin: auto; width: 90%">
+      <div class="col-sm">
+        <label class="form-label">Tipo de Usuario</label>
+        <select
+          name="tipoUsuario"
+          v-model="formulario.tipoUsuario"
+          class="form-select"
+          required
+        >
+          <option selected disabled="">Seleccione una opción</option>
+          <option value="1">Administrador</option>
+          <option value="0">Vendedor</option>
+        </select>
+      </div>
+
+      <div class="col-sm">
+        <label class="form-label">Estatus</label>
+        <select
+          name="activo"
+          v-model="formulario.activo"
+          class="form-select"
+          required
+        >
+          <option selected disabled="">Seleccione una opción</option>
+          <option value="1">Activo</option>
+          <option value="0">Inactivo</option>
+        </select>
+      </div>
+    </div>
+    <div class="mb-3">
+      <button
+        class="btn btn-outline-primary"
+        v-on:click="actualizarUsuario('<%=usuario.idUsuario%>')"
+      >
+        Aplicar Edición
+      </button>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var data_formulario = {
+    nombre: "<%= persona.nombre %>",
+    correo: "<%= persona.correo %>",
+    usuario: "<%= usuario.usuario %>",
+    psw: "<%= usuario.psw %>",
+    tipoUsuario: "<%= usuario.tipoUsuario %>",
+    activo: "<%= usuario.activo %>",
+  };
+</script>
+<script
+  src="/js/formularioUsuario.js"
+  type="text/javascript"
+  charset="utf-8"
+></script>

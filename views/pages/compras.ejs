@@ -1,0 +1,117 @@
+<style>
+  .display-4 {
+    margin-top: 10px;
+  }
+  .table {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 35cm;
+    margin-top: 10px;
+  }
+  .container-col-5de {
+    float: right;
+  }
+</style>
+<center><h1 class="display-4"><b>COMPRAS</b></h1></center>
+<div class="container-sm">
+  <div class="row">
+    <div class="col-sm" style="max-width: auto; margin-top: auto">
+      <% if(admin){ %>
+      <button
+        class="btn btn-outline-success"
+        onclick="window.location.href='/nueva-compra'"
+      >
+        <i class="bi bi-plus"></i> Nueva Compra
+      </button>
+      <% } %>
+    </div>
+    <div class="col-sm" style="max-width: 35%; margin-left: 40%">
+      <form action="/compra" method="GET">
+        <h5 class="tit">
+          BÚSQUEDA AVANZADA:<br />Ingresa Proveedor o Id de Compra
+        </h5>
+        <div class="input-group">
+          <input
+            type="text"
+            class="col rounded"
+            aria-label="Search"
+            id="search"
+            name="search"
+          />
+          <button type="submit" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Id Compra</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Total</th>
+        <th scope="col">Clave de Proveedor</th>
+        <th scope="col">Nombre de Proveedor</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% compras_data.forEach(function(compra){ %> <% if
+      (compra.nombreProveedor.includes(search)||compra.idCompra==search){%>
+      <tr>
+        <td><%=compra.idCompra%></td>
+        <td><%=compra.fecha%></td>
+        <td>$ <%=compra.totalCompra%></td>
+        <td><%=compra.claveProveedor%></td>
+        <td><%=compra.nombreProveedor%></td>
+        <td>
+          <a href="/compra/<%=compra.idCompra%>"
+            ><i class="bi bi-three-dots"></i
+          ></a>
+        </td>
+      </tr>
+      <% } %> <% }) %>
+    </tbody>
+  </table>
+</div>
+<script type="text/javascript" charset="utf-8">
+  function eliminarProducto(id) {
+    Swal.fire({
+      title: "Cuidado, eliminando registro del producto...",
+      text: "El registro se eliminara definitivamente",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch("/v1/eliminar-producto/" + id, {
+          method: "POST",
+          body: JSON.stringify(this.formulario),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then(() => {
+            Swal.fire(
+              "PRODUCTO ELIMINADO",
+              "El registro del producto se ha eliminado de la base de datos",
+              "success"
+            ).then(() => {
+              window.location.href = "/productos";
+            });
+          })
+          .catch(function (error) {
+            Swal.fire(
+              "Error",
+              "Error al eliminar el registro del producto: " + error,
+              "error"
+            );
+            console.error(error);
+          });
+      }
+    });
+  }
+</script>

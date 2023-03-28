@@ -1,0 +1,126 @@
+<style>
+  .display-4 {
+    margin-top: 10px;
+  }
+  .table {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 35cm;
+    margin-top: 10px;
+  }
+  .container-col-5de {
+    float: right;
+  }
+</style>
+<center><h1 class="display-4"><b>PRODUCTOS</b></h1></center>
+<div class="container-sm">
+  <div class="row">
+    <div class="col-sm" style="max-width: auto; margin-top: auto">
+    <% if(admin){ %>
+      <button
+        class="btn btn-outline-success"
+        onclick="window.location.href='/nuevo-producto'"
+      >
+        <i class="bi bi-plus"></i> Nuevo Producto
+      </button>
+    <% } %>
+    </div>
+    <div class="col-sm" style="max-width: 35%; margin-left: 40%">
+      <form action="/productos" method="GET">
+        <h5 class="tit">
+          BÚSQUEDA AVANZADA:<br />Ingresa Nombre o Id de Producto
+        </h5>
+        <div class="input-group">
+          <input
+            type="text"
+            class="col rounded"
+            aria-label="Search"
+            id="search"
+            name="search"
+          />
+          <button type="submit" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Id Producto</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Descripción</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Precio Venta</th>
+        <th scope="col">Precio Compra</th>
+        <% if(admin) { %>
+        <th class="col-sm-2" scope="col"></th>
+        <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% products_data.forEach(function(product){ %> <% if
+      (product.nombre.includes(search)||product.idArticulos==search){%>
+      <tr>
+        <td><%=product.idArticulos%></td>
+        <td><%=product.nombre%></td>
+        <td><%=product.descripcion%></td>
+        <td><%=product.cantidad%></td>
+        <td>$ <%=product.precioVenta%></td>
+        <td>$ <%=product.precioCompra%></td>
+        <% if(admin) { %>
+            <td>
+            <a href="/productos/<%=product.idArticulos%>"
+              ><i class="bi bi-pencil-square" style="color: black"></i
+            ></a>
+            <a onclick="eliminarProducto('<%=product.idArticulos%>')">
+              <i class="bi bi-trash3-fill" style="color: black"></i>
+            </a>
+          </td>
+        <% } %>
+      </tr>
+      <% } %> <% }) %>
+    </tbody>
+  </table>
+</div>
+<script type="text/javascript" charset="utf-8">
+  function eliminarProducto(id) {
+    Swal.fire({
+      title: "Cuidado, eliminando registro del producto...",
+      text: "El registro se eliminara definitivamente",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Eliminar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch("/v1/eliminar-producto/" + id, {
+          method: "POST",
+          body: JSON.stringify(this.formulario),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then(() => {
+            Swal.fire(
+              "PRODUCTO ELIMINADO",
+              "El registro del producto se ha eliminado de la base de datos",
+              "success"
+            ).then(() => {
+              window.location.href = "/productos";
+            });
+          })
+          .catch(function (error) {
+            Swal.fire(
+              "Error",
+              "Error al eliminar el registro del producto: " + error,
+              "error"
+            );
+            console.error(error);
+          });
+      }
+    });
+  }
+</script>
